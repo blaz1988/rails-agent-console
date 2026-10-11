@@ -40,6 +40,39 @@ RSpec.describe RailsAgentConsole::Schema do
     end
   end
 
+  describe ".diagnostics" do
+    it "is empty when schema inspection succeeds" do
+      expect(described_class.diagnostics).to be_empty
+    end
+
+    it "reports a model that could not be inspected" do
+      allow(Invoice).to receive(:table_exists?).and_raise(RuntimeError, "metadata unavailable")
+      described_class.reset!
+
+      expect(described_class.model_names).not_to include("Invoice")
+      expect(described_class.diagnostics).to include(
+        scope: :model,
+        model: "Invoice",
+        error: "RuntimeError",
+        message: "metadata unavailable"
+      )
+    end
+
+    it "keeps a model but reports association inspection failures" do
+      allow(Customer).to receive(:reflect_on_all_associations).and_raise(RuntimeError, "reflection unavailable")
+      described_class.reset!
+
+      expect(described_class.model_names).to include("Customer")
+      expect(described_class.find("Customer").associations).to be_empty
+      expect(described_class.diagnostics).to include(
+        scope: :associations,
+        model: "Customer",
+        error: "RuntimeError",
+        message: "reflection unavailable"
+      )
+    end
+  end
+
   describe ".context" do
     subject(:context) { described_class.context }
 

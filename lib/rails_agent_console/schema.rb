@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
+require_relative "schema_diagnostics"
+
 module RailsAgentConsole
   module Schema
+    extend SchemaDiagnostics
+
     INTERNAL_PREFIXES = %w[
       ActiveRecord:: ActiveStorage:: ActionText:: ActionMailbox::
       SolidQueue:: SolidCache:: SolidCable:: Delayed:: PgSearch::
@@ -90,6 +94,7 @@ module RailsAgentConsole
 
       def reset!
         @models = nil
+        @diagnostics = nil
         self
       end
 
@@ -120,11 +125,6 @@ module RailsAgentConsole
 
       def inspect
         context
-      end
-
-      def print(prompt = nil)
-        RailsAgentConsole.configuration.out.puts(context(prompt))
-        nil
       end
 
       private
@@ -168,6 +168,7 @@ module RailsAgentConsole
       def load_models
         return [] unless active_record?
 
+        @diagnostics = []
         eager_load!
         candidates = ActiveRecord::Base.descendants.reject do |klass|
           klass.name.nil? || klass.abstract_class? || internal?(klass.name) || excluded?(klass.name)
@@ -209,7 +210,8 @@ module RailsAgentConsole
           referenced_by: [],
           abstract: false
         )
-      rescue StandardError
+      rescue StandardError => e
+        record_diagnostic(:model, klass.name, e)
         nil
       end
 
@@ -232,7 +234,8 @@ module RailsAgentConsole
             through: reflection.options[:through]
           }
         end
-      rescue StandardError
+      rescue StandardError => e
+        record_diagnostic(:associations, klass.name, e)
         []
       end
 
@@ -263,7 +266,8 @@ module RailsAgentConsole
         return if Rails.application.config.eager_load
 
         Rails.application.eager_load!
-      rescue StandardError
+      rescue StandardError => e
+        record_diagnostic(:model, nil, e)
         nil
       end
 

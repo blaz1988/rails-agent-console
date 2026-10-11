@@ -34,8 +34,8 @@ module RailsAgentConsole
       nil
     end
 
-    def ai_schema(prompt = nil)
-      Schema.print(prompt)
+    def ai_schema(prompt = nil, diagnostics: false)
+      Schema.print(prompt, diagnostics: diagnostics)
     end
 
     def ai_model(target = nil)

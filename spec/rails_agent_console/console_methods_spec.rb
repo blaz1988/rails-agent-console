@@ -59,6 +59,16 @@ RSpec.describe RailsAgentConsole::ConsoleMethods do
       expect(printed).to include("Invoice (invoices)")
     end
 
+    it "prints schema diagnostics on request" do
+      allow(Invoice).to receive(:table_exists?).and_raise(RuntimeError, "metadata unavailable")
+      RailsAgentConsole::Schema.reset!
+
+      console.ai_schema(diagnostics: true)
+
+      expect(printed).to include("Schema diagnostics: 1 issue detected.")
+      expect(printed).to include("Invoice: model inspection failed (RuntimeError: metadata unavailable)")
+    end
+
     it "prints and clears the conversation" do
       console.ai("how many customers?")
       console.ai_history

@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Add opt-in schema diagnostics via `ai_schema(diagnostics: true)` for model and association inspection failures.
+
 ## [0.1.0] - 2026-09-29
 
 First public release.

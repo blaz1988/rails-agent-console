@@ -103,7 +103,7 @@ read without echo. Nothing secret is written into your application.
 | `ask "..."` | Answers a question and never runs anything |
 | `explain User.where(active: true)` | Explains an existing query or relation |
 | `run "..."` | Same as `ai`; reads better for reporting questions |
-| `ai_schema` | Prints exactly what the model is told about your app |
+| `ai_schema` | Prints exactly what the model is told about your app; pass `diagnostics: true` to show schema inspection issues |
 | `ai_history` | Shows the conversation so far |
 | `ai_reset` | Forgets the conversation |
 | `ai_model` | Shows which model answers, and switches to another |
@@ -284,7 +284,9 @@ Other models: Order, Payment, SupportTicket
 
 The models relevant to the question are described in full and the rest are listed by name,
 which keeps the prompt small in applications with hundreds of models. `ai_schema "invoices"`
-shows exactly what would be sent.
+shows exactly what would be sent. If model or association inspection fails,
+`ai_schema(diagnostics: true)` prints the skipped/partial model and the underlying error without
+changing the schema context sent to the model.
 
 ## Configuration
 
