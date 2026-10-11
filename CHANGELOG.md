@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Refresh the cached schema context when Rails reloads application code, so `reload!` does not leave AI queries using stale model metadata.
+
 ## [0.1.0] - 2026-09-29
 
 First public release.

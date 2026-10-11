@@ -14,6 +14,10 @@ module RailsAgentConsole
       end
     end
 
+    config.to_prepare do
+      RailsAgentConsole::Schema.reset!
+    end
+
     console do
       require "irb"
       require "rails_agent_console/console_installer"
