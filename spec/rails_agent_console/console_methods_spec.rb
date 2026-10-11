@@ -69,6 +69,14 @@ RSpec.describe RailsAgentConsole::ConsoleMethods do
 
       expect(RailsAgentConsole.agent.history).to be_empty
     end
+
+    it "clears the cached schema" do
+      cached_models = RailsAgentConsole::Schema.models
+
+      console.ai_reset
+
+      expect(RailsAgentConsole::Schema.models).not_to be(cached_models)
+    end
   end
 
   describe ".installable" do

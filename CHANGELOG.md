@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Clear the cached schema context with `ai_reset`, so the helper fully resets session state before the next AI query.
+
 ## [0.1.0] - 2026-09-29
 
 First public release.

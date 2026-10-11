@@ -30,6 +30,7 @@ module RailsAgentConsole
 
     def ai_reset
       RailsAgentConsole.agent.reset!
+      RailsAgentConsole::Schema.reset!
       RailsAgentConsole.configuration.out.puts("Conversation cleared.")
       nil
     end
